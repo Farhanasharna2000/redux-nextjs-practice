@@ -1,5 +1,5 @@
-import { createSlice,nanoid } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface Employee {
   id: string;
@@ -11,19 +11,21 @@ export interface EmployeesState {
 }
 const initialState: EmployeesState = {
   Employees: [],
-}
+};
 export const EmployeesSlice = createSlice({
-      name: 'employee',
+  name: "employee",
   initialState,
   reducers: {
-    addEmployee:(state,action: PayloadAction<string>)=>{
-        const data={
-            id:nanoid(),
-            name:action.payload
-        }
-        state.Employees.push(data)
-    }
-  }})
-export const { addEmployee } = EmployeesSlice.actions
+    addEmployee: (state, action: PayloadAction<string>) => {
+      // console.log(action)
+      const data = {
+        id: nanoid(),
+        name: action.payload,
+      };
+      state.Employees.push(data);
+    },
+  },
+});
+export const { addEmployee } = EmployeesSlice.actions;
 
-export default EmployeesSlice.reducer
+export default EmployeesSlice.reducer;
