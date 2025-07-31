@@ -24,8 +24,14 @@ export const EmployeesSlice = createSlice({
       };
       state.Employees.push(data);
     },
+    removeEmployee: (state, action: PayloadAction<string>) => {
+      const data = state.Employees.filter((employee) => {
+        return employee.id !== action.payload;
+      });
+      state.Employees = data;
+    },
   },
 });
-export const { addEmployee } = EmployeesSlice.actions;
+export const { addEmployee, removeEmployee } = EmployeesSlice.actions;
 
 export default EmployeesSlice.reducer;
