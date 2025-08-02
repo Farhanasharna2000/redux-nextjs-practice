@@ -8,20 +8,23 @@ const ShowEmployees = () => {
   const dispatch = useDispatch();
   const EmployeesData = useSelector(
     (state: RootState) => state.employee.Employees
+    //state.reducername in store.ts.initialstatevalue name in slice.ts
   );
-  //state.reducername in store.ts.initialstatevalue name in slice.ts
 
   return (
-    <div className="text-center ">
+    <div className="text-center">
       <h2 className="text-5xl font-bold text-red-800">Show Employees</h2>
-      {EmployeesData.map((employee) => (
-        <div
-          key={employee.id}
-          className="flex items-center justify-center gap-2 my-10"
-        >
-          <h4 className="text-xl my-2">{employee.name}</h4>
-          <button onClick={() => dispatch(removeEmployee(employee.id))}>
-            <svg
+      {EmployeesData.length === 0 ? (
+        <p className="mt-4 text-gray-500">No employees found.</p>
+      ) : (
+        EmployeesData.map((employee) => (
+          <div
+            key={employee.id}
+            className="flex items-center justify-center gap-2 my-10"
+          >
+            <h4 className="text-xl my-2">{employee.name}</h4>
+            <button onClick={() => dispatch(removeEmployee(employee.id))}>
+              <svg
               width="24px"
               height="24px"
               viewBox="0 0 24 24"
@@ -33,9 +36,10 @@ const ShowEmployees = () => {
                 fill="#9f0712"
               />
             </svg>
-          </button>
-        </div>
-      ))}
+            </button>
+          </div>
+        ))
+      )}
     </div>
   );
 };

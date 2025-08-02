@@ -1,13 +1,13 @@
-import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
+// redux/employeeSlice.ts
+import { createAsyncThunk, createSlice, current, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-// Local employee (added manually)
+// Types
 interface Employee {
   id: string;
   name: string;
 }
 
-// API employee (fetched from API)
 interface ApiEmployee {
   id: number;
   name: string;
@@ -18,21 +18,13 @@ interface ApiEmployee {
     suite: string;
     city: string;
     zipcode: string;
-    geo: {
-      lat: string;
-      lng: string;
-    };
+    geo: { lat: string; lng: string };
   };
   phone: string;
   website: string;
-  company: {
-    name: string;
-    catchPhrase: string;
-    bs: string;
-  };
+  company: { name: string; catchPhrase: string; bs: string };
 }
 
-// State shape
 interface EmployeesState {
   Employees: Employee[];
   EmployeesApiData: ApiEmployee[];
@@ -40,7 +32,7 @@ interface EmployeesState {
   error: string | null;
 }
 
-// Initial state
+// Initial state (no localStorage here)
 const initialState: EmployeesState = {
   Employees: [],
   EmployeesApiData: [],
@@ -48,7 +40,7 @@ const initialState: EmployeesState = {
   error: null,
 };
 
-// Async thunk to fetch API employee data
+// Async thunk
 export const fetchEmployees = createAsyncThunk<ApiEmployee[]>(
   "employee/fetchEmployees",
   async () => {
@@ -62,17 +54,24 @@ const EmployeesSlice = createSlice({
   name: "employee",
   initialState,
   reducers: {
+    loadEmployeesFromStorage: (state, action: PayloadAction<Employee[]>) => {
+      state.Employees = action.payload;
+    },
     addEmployee: (state, action: PayloadAction<string>) => {
       const newEmployee: Employee = {
         id: nanoid(),
         name: action.payload,
       };
       state.Employees.push(newEmployee);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("employee", JSON.stringify(current(state.Employees)));//current unmuteable state k muteable kore
+      }
     },
     removeEmployee: (state, action: PayloadAction<string>) => {
-      state.Employees = state.Employees.filter(
-        (employee) => employee.id !== action.payload
-      );
+      state.Employees = state.Employees.filter(emp => emp.id !== action.payload);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("employee", JSON.stringify(state.Employees));//filter korar jonno muteable state e ashe tai current use korar dorkar hoy na
+      }
     },
   },
   extraReducers: (builder) => {
@@ -92,6 +91,6 @@ const EmployeesSlice = createSlice({
   },
 });
 
-// Export actions and reducer
-export const { addEmployee, removeEmployee } = EmployeesSlice.actions;
+// Exports
+export const { addEmployee, removeEmployee, loadEmployeesFromStorage } = EmployeesSlice.actions;
 export default EmployeesSlice.reducer;
